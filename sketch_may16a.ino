@@ -13,285 +13,50 @@ RTC_DS1307 rtc;
 
 #define BUZZER_PIN 7
 
-int LM35 = A2;
+#define KB_DATA_PIN 8
+#define KB_CLK_PIN 3
+PS2Keyboard keyboard;
 
-int i = 9;
+const int LM35 = A2;
+
 byte lightIntensity;
 
 MD_Parola P = MD_Parola(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
-PS2Keyboard keyboard;
 
-MD_MAX72XX::fontType_t newFont[] PROGMEM = //font yang digunakan
-{
-	0, 	// 0 
-	0, 	// 1 
-	0, 	// 2 
-	0, 	// 3 
-	0, 	// 4 
-	0, 	// 5 
-	0, 	// 6 
-	0, 	// 7 
-	0, 	// 8 
-	0, 	// 9 
-	0, 	// 10 
-	0, 	// 11 
-	0, 	// 12 
-	0, 	// 13 
-	0, 	// 14 
-	0, 	// 15 
-	0, 	// 16 
-	0, 	// 17 
-	0, 	// 18 
-	0, 	// 19 
-	0, 	// 20 
-	0, 	// 21 
-	0, 	// 22 
-	0, 	// 23 
-	0, 	// 24 
-	0, 	// 25 
-	0, 	// 26 
-	0, 	// 27 
-	0, 	// 28 
-	0, 	// 29 
-	0, 	// 30 
-	0, 	// 31 
-	1, 0, 	// 32 
-	1, 94, 	// 33 !
-	3, 12, 0, 12, 	// 34 
-	5, 40, 124, 40, 124, 40, 	// 35 
-	5, 68, 74, 255, 82, 34, 	// 36 
-	6, 70, 38, 16, 8, 100, 98, 	// 37 
-	5, 36, 90, 90, 36, 80, 	// 38 
-	1, 12, 	// 39 
-	3, 24, 36, 66, 	// 40 
-	3, 66, 36, 24, 	// 41 
-	5, 34, 20, 62, 20, 34, 	// 42 
-	5, 16, 16, 124, 16, 16, 	// 43 
-	2, 64, 32, 	// 44 
-	5, 16, 16, 16, 16, 16, 	// 45 
-	1, 64, 	// 46 
-	5, 64, 32, 16, 8, 4, 	// 47 
-	3, 127, 65, 127, 	// 48 
-	3, 66, 127, 64, 	// 49 
-	3, 115, 73, 79, 	// 50 
-	3, 73, 73, 127, 	// 51 
-	3, 15, 8, 127, 	// 52 
-	3, 79, 73, 57, 	// 53 
-	3, 126, 73, 113, 	// 54 
-	3, 1, 1, 127, 	// 55 
-	3, 127, 73, 127, 	// 56 
-	3, 71, 41, 31, 	// 57 
-	1, 20, 	// 58 
-	1, 52, 	// 59 
-	3, 16, 40, 68, 	// 60 
-	4, 40, 40, 40, 40, 	// 61 
-	3, 68, 40, 16, 	// 62 
-	3, 6, 82, 14, 	// 63 
-	0, 	// 64 
-	3, 127, 9, 127, 	// 65 
-	3, 127, 73, 54, 	// 66 
-	3, 127, 65, 65, 	// 67 
-	3, 127, 65, 62, 	// 68 
-	3, 127, 73, 73, 	// 69 
-	3, 127, 9, 9, 	// 70 
-	3, 126, 65, 121, 	// 71 
-	3, 127, 8, 127, 	// 72 
-	3, 65, 127, 65, 	// 73 
-	3, 33, 65, 63, 	// 74 
-	3, 127, 8, 119, 	// 75 
-	3, 127, 64, 64, 	// 76 
-	4, 127, 6, 6, 127, 	// 77 
-	4, 127, 6, 12, 127, 	// 78 
-	3, 62, 65, 62, 	// 79 
-	3, 127, 9, 6, 	// 80 
-	4, 30, 33, 33, 94, 	// 81 
-	3, 127, 9, 118, 	// 82 
-	3, 111, 73, 115, 	// 83 
-	3, 1, 127, 1, 	// 84 
-	3, 127, 64, 127, 	// 85 
-	3, 63, 64, 63, 	// 86 
-	5, 63, 64, 63, 64, 63, 	// 87 
-	4, 103, 28, 28, 99, 	// 88 
-	3, 7, 120, 7, 	// 89 
-	4, 113, 89, 77, 71, 	// 90 
-	2, 127, 65, 	// 91 
-	2, 0, 0, 	// 92 
-	2, 65, 127, 	// 93 
-	5, 8, 4, 2, 4, 8, 	// 94 
-	3, 64, 64, 64, 	// 95 
-	2, 6, 12, 	// 96 
-	3, 116, 84, 124, 	// 97 
-	3, 126, 72, 48, 	// 98 
-	3, 124, 68, 68, 	// 99 
-	3, 112, 80, 126, 	// 100 
-	3, 124, 84, 92, 	// 101 
-	3, 124, 18, 18, 	// 102 
-	3, 76, 82, 62, 	// 103 
-	3, 126, 16, 112, 	// 104 
-	1, 122, 	// 105 
-	2, 64, 58, 	// 106 
-	3, 126, 24, 118, 	// 107 
-	2, 62, 64, 	// 108 
-	5, 124, 4, 124, 4, 124, 	// 109 
-	3, 124, 4, 120, 	// 110 
-	3, 56, 68, 56, 	// 111 
-	3, 124, 20, 28, 	// 112 
-	3, 28, 20, 124, 	// 113 
-	3, 124, 4, 8, 	// 114 
-	3, 72, 84, 36, 	// 115 
-	3, 8, 124, 72, 	// 116 
-	3, 60, 64, 124, 	// 117 
-	3, 60, 64, 60, 	// 118 
-	5, 60, 64, 60, 64, 60, 	// 119 
-	4, 68, 56, 56, 68, 	// 120 
-	3, 76, 80, 60, 	// 121 
-	3, 100, 84, 76, 	// 122
-	0, 	// 123
-	0, 	// 124
-	0, 	// 125
-	0, 	// 126
-	2, 0, 0, 	// 127
-	0, 	// 128
-	0, 	// 129
-	0, 	// 130
-	0, 	// 131
-	0, 	// 132
-	0, 	// 133
-	0, 	// 134
-	0, 	// 135
-	0, 	// 136
-	0, 	// 137
-	0, 	// 138
-	0, 	// 139
-	0, 	// 140
-	0, 	// 141
-	0, 	// 142
-	0, 	// 143
-	0, 	// 144
-	0, 	// 145
-	0, 	// 146
-	0, 	// 147
-	0, 	// 148
-	0, 	// 149
-	0, 	// 150
-	0, 	// 151
-	0, 	// 152
-	0, 	// 153
-	0, 	// 154
-	0, 	// 155
-	0, 	// 156
-	0, 	// 157
-	0, 	// 158
-	0, 	// 159
-	0, 	// 160
-	0, 	// 161
-	0, 	// 162
-	0, 	// 163
-	0, 	// 164
-	0, 	// 165
-	0, 	// 166
-	0, 	// 167
-	0, 	// 168
-	0, 	// 169
-	0, 	// 170
-	0, 	// 171
-	0, 	// 172
-	0, 	// 173
-	0, 	// 174
-	0, 	// 175
-	2, 6, 6, 	// 176
-	0, 	// 177
-	0, 	// 178
-	0, 	// 179
-	0, 	// 180
-	0, 	// 181
-	0, 	// 182
-	0, 	// 183
-	0, 	// 184
-	0, 	// 185
-	0, 	// 186
-	0, 	// 187
-	0, 	// 188
-	0, 	// 189
-	0, 	// 190
-	0, 	// 191
-	0, 	// 192
-	0, 	// 193
-	0, 	// 194
-	0, 	// 195
-	0, 	// 196
-	0, 	// 197
-	0, 	// 198
-	0, 	// 199
-	0, 	// 200
-	0, 	// 201
-	0, 	// 202
-	0, 	// 203
-	0, 	// 204
-	0, 	// 205
-	0, 	// 206
-	0, 	// 207
-	0, 	// 208
-	0, 	// 209
-	0, 	// 210
-	0, 	// 211
-	0, 	// 212
-	0, 	// 213
-	0, 	// 214
-	0, 	// 215
-	0, 	// 216
-	0, 	// 217
-	0, 	// 218
-	0, 	// 219
-	0, 	// 220
-	0, 	// 221
-	0, 	// 222
-	0, 	// 223
-	0, 	// 224
-	0, 	// 225
-	0, 	// 226
-	0, 	// 227
-	0, 	// 228
-	0, 	// 229
-	0, 	// 230
-	0, 	// 231
-	0, 	// 232
-	0, 	// 233
-	0, 	// 234
-	0, 	// 235
-	0, 	// 236
-	0, 	// 237
-	0, 	// 238
-	0, 	// 239
-	0, 	// 240
-	0, 	// 241
-	0, 	// 242
-	0, 	// 243
-	0, 	// 244
-	0, 	// 245
-	0, 	// 246
-	0, 	// 247
-	0, 	// 248
-	0, 	// 249
-	0, 	// 250
-	0, 	// 251
-	0, 	// 252
-	0, 	// 253
-	0, 	// 254
-	0, 	// 255
-};
- 
+bool alarmState_1 = false;
+String alarmhour_1 = "";
+String alarmminute_1 = "";
+String alarmdate_1 = "";
+String alarmmonth_1 = "";
+String alarmyear_1 = "";
+char *alarmmessage_1 = "5024201043";
+
+bool alarmState_2 = false;
+String alarmhour_2 = "";
+String alarmminute_2 = "";
+String alarmdate_2 = "";
+String alarmmonth_2 = "";
+String alarmyear_2 = "";
+char *alarmmessage_2 = "5024201043 Muhammad Risyad Ibenzani";
+
+bool alarmState_3 = false;
+String alarmhour_3 = "";
+String alarmminute_3 = "";
+String alarmdate_3 = "";
+String alarmmonth_3 = "";
+String alarmyear_3 = "";
+char *alarmmessage_3 = "TEST";
+
 void setup()
 {
-  pinMode(A0, INPUT); //input LDR
-  pinMode(BUZZER_PIN, OUTPUT);
+  pinMode(A0, INPUT); //LDR SENSOR PIN
+  pinMode(BUZZER_PIN, OUTPUT); //BUZZER INIT
   Serial.begin(9600);
-  P.begin();
+  P.begin(); //BEGIN PAROLA
   P.setInvert(false); 
   P.setIntensity(0);
-  P.setFont(newFont);
   Wire.begin();
-  keyboard.begin(8, 3);
+  keyboard.begin(KB_DATA_PIN, KB_CLK_PIN); //BEGIN KEYBOARD
 
   if (! rtc.begin()) {
     Serial.println("Couldn't find RTC");
@@ -301,7 +66,12 @@ void setup()
 
   if (! rtc.isrunning()) {
     Serial.println("RTC is NOT running, let's set the time!");
+    // When time needs to be set on a new device, or after a power loss, the
+    // following line sets the RTC to the date & time this sketch was compiled
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    // This line sets the RTC with an explicit date & time, for example to set
+    // January 21, 2014 at 3am you would call:
+    // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
   }
 
   P.displayText("Muhammad Risyad Ibenzani - 5024201043", PA_CENTER, 50, 0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
@@ -311,21 +81,60 @@ void setup()
 String Hour;
 String TIMP=" ";
 String HOUR=" ";
+int hour = 0;
 String MINUTE=" ";
+int minute = 0;
 String SECOND=" ";
+int second = 0;
 String DATA="";
  
 String Day;
+int day = 0;
 String Month;
+int month = 0;
 String Year;
+int year = 0;
 String CelSTR;
- 
+
+int defaultState;
+
+char bracket[20] = ""; //BUFFER FOR TEXT/INPUT FIELD
+int length = 0;
+char TIMECHAR[20] = ""; //HOLDER FOR TIME INPUT
+char DATECHAR[20] = ""; //HOLDER FOR DATE INPUT
+
 void loop()
 {
-  char key = keyboard.read();
+  brightness(); //LIGHT SENSOR AUTO BRIGHTNESS
 
-  DateTime now = rtc.now();
+  char key = keyboard.read(); //READ KEYBOARD INPUT
+
+  while (defaultState == 4)
+  {
+    setAlarm3();
+  }
+  while (defaultState == 3)
+  {
+    setAlarm2();
+  }
+  while (defaultState == 2)
+  {
+    setAlarm1();
+  }
+  while (defaultState == 1)
+  {
+    TimeSet();
+  }
+  while (defaultState == 0) 
+  {
+    clock();
+  }
+}
+
+void brightness()
+{
   lightIntensity = analogRead(A0);
+
   if (lightIntensity <= 127)
   {
     P.setIntensity(10);
@@ -334,6 +143,14 @@ void loop()
   {
     P.setIntensity(0.5);
   }
+}
+
+void clock() //DEFAULT STATE
+{
+  brightness();
+
+  char key = keyboard.read();
+  DateTime now = rtc.now();
 
   float t = temp();
   CelSTR = String(t,1);
@@ -341,24 +158,27 @@ void loop()
   const char *CelC = CelSTR.c_str(); 
 
   HOUR = (now.hour());
+  hour = (now.hour());
   if (HOUR.length() < 2)
   {
     HOUR = "0"+ HOUR;
   }
  
   MINUTE = (now.minute());
+  minute = (now.minute());
   if (MINUTE.length() < 2)
   {
     MINUTE = "0"+ MINUTE;
   }
 
   SECOND = (now.second());
+  second = (now.second());
   if (SECOND.length() < 2)
   {
     SECOND = "0"+ SECOND;
   }
   
-  if (now.second()%2 == 0)
+  if (now.second() % 2 == 0) //flasher untuk tanda ":" pada jam
   {
     TIMP = HOUR + ":" + MINUTE + ":" + SECOND;
   }
@@ -366,52 +186,23 @@ void loop()
   {
     TIMP = HOUR + " " + MINUTE + " " + SECOND;
   }
- 
+  
   const char *Timp = TIMP.c_str();
  
   Day = now.day();
+  day = now.day();
   Month = now.month();
+  month = now.month();
   Year = now.year() - 2000;
+  year = now.year();
+  if (Year.length() < 2)
+  {
+    Year = "0" + Year;
+  }
  
   String Date = Day + "-" + Month + "-" + Year;
   const char *Data = Date.c_str(); 
-
-  if (key == '1')
-  {
-    digitalWrite(BUZZER_PIN, HIGH);
-    delay(800);
-    digitalWrite(BUZZER_PIN, LOW);
-    delay(800);
-    digitalWrite(BUZZER_PIN, HIGH);
-    P.displayText("1. 5024201043", PA_LEFT, 50, 1000, PA_SCROLL_LEFT, PA_SCROLL_LEFT); //tampil tanggal
-    while (!P.displayAnimate());
-    digitalWrite(BUZZER_PIN, LOW);
-    loop();
-  }
-  if (key == '2')
-  {
-    digitalWrite(BUZZER_PIN, HIGH);
-    delay(800);
-    digitalWrite(BUZZER_PIN, LOW);
-    delay(800);
-    digitalWrite(BUZZER_PIN, HIGH);
-    P.displayText("2. 5024201043 Muhammad Risyad Ibenzani", PA_LEFT, 50, 1000, PA_SCROLL_LEFT, PA_SCROLL_LEFT); //tampil tanggal
-    while (!P.displayAnimate());
-    digitalWrite(BUZZER_PIN, LOW);
-    loop();
-  }
-  if (key == '3')
-  {
-    digitalWrite(BUZZER_PIN, HIGH);
-    delay(800);
-    digitalWrite(BUZZER_PIN, LOW);
-    delay(800);
-    digitalWrite(BUZZER_PIN, HIGH);
-    P.displayText("3. ", PA_LEFT, 50, 1000, PA_SCROLL_LEFT, PA_SCROLL_LEFT); //tampil tanggal
-    while (!P.displayAnimate());
-    digitalWrite(BUZZER_PIN, LOW);
-    loop();
-  }
+  checkAlarm();
 
   if (now.second() == 10 || now.second() == 40)
   {
@@ -423,6 +214,59 @@ void loop()
     P.displayText(CelC, PA_CENTER, 75, 3000, PA_PRINT, PA_NO_EFFECT); //tampil suhu
     while (!P.displayAnimate());
   }
+  else if (alarmState_1 == true)
+  {
+    digitalWrite(BUZZER_PIN, HIGH);
+    P.displayText(alarmmessage_1, PA_CENTER, 75, 3000, PA_SCROLL_LEFT, PA_SCROLL_LEFT); //alarm1
+    while (!P.displayAnimate());
+    digitalWrite(BUZZER_PIN, LOW);
+    alarmhour_1 = "";
+    alarmminute_1 = "";
+    alarmState_1 = false;
+    loop();
+  }
+  else if (alarmState_2 == true)
+  {
+    digitalWrite(BUZZER_PIN, HIGH);
+    P.displayText(alarmmessage_2, PA_CENTER, 75, 3000, PA_SCROLL_LEFT, PA_SCROLL_LEFT); //alarm2
+    while (!P.displayAnimate());
+    digitalWrite(BUZZER_PIN, LOW);
+    alarmhour_2 = "";
+    alarmminute_2 = "";
+    alarmState_2 = false;
+    loop();
+  }
+  else if (alarmState_3 == true)
+  {
+    digitalWrite(BUZZER_PIN, HIGH);
+    P.displayText(alarmmessage_3, PA_CENTER, 75, 3000, PA_SCROLL_LEFT, PA_SCROLL_LEFT); //alarm3
+    while (!P.displayAnimate());
+    digitalWrite(BUZZER_PIN, LOW);
+    alarmhour_3 = "";
+    alarmminute_3 = "";
+    alarmState_3 = false;
+    loop();
+  }
+  else if (key == PS2_ESC)
+  {
+    defaultState = 1;
+    loop();
+  }
+  else if (key == '1')
+  {
+    defaultState = 2;
+    loop();
+  }
+  else if (key == '2')
+  {
+    defaultState = 3;
+    loop();
+  }
+  else if (key == '3')
+  {
+    defaultState = 4;
+    loop();
+  }
   else
   {
     P.displayText(Timp, PA_CENTER, 50, 0, PA_PRINT, PA_NO_EFFECT); // tampil jam
@@ -430,12 +274,276 @@ void loop()
   }
 }
 
+String hourInput;
+String minuteInput;
+String secondInput;
+String dayInput;
+String monthInput;
+String yearInput;
+
+void TimeSet()
+{
+  brightness();
+  if(keyboard.available())
+  {
+    char key = keyboard.read();
+    bracket[length] = key;
+
+    if (key == PS2_DELETE)
+    {
+      length--;
+      if (length <= 0)
+      {
+        length = 0;
+      }
+    }
+    else if (key == PS2_ESC)
+    {
+      defaultState = 0;
+      memset(bracket, 0, 20);
+      length = 0;
+      P.displayClear();
+      loop();
+    }
+    else 
+    {
+      if (key >= '0' && key <= '9')
+      {
+        length++;
+      }
+      
+      if (length > 8)
+      {
+        length = 8;
+      }
+    }
+    if (key == PS2_ENTER)
+    {
+      if (strlen(bracket) == 7)
+      {
+        strcat (TIMECHAR, bracket);
+
+        hourInput = String(TIMECHAR).substring(0,2);
+        minuteInput = String(TIMECHAR).substring(2,4);
+        secondInput = String(TIMECHAR).substring(4,7);
+        rtc.adjust(DateTime(year,month,day, hourInput.toInt(),minuteInput.toInt(),secondInput.toInt()));
+      }
+      else if(strlen(bracket) == 9)
+      {
+        strcat (DATECHAR, bracket);
+
+        dayInput = String(DATECHAR).substring(0,2);
+        monthInput = String(DATECHAR).substring(2,4);
+        yearInput = String(DATECHAR).substring(4,8);
+        rtc.adjust(DateTime(yearInput.toInt(),monthInput.toInt(),dayInput.toInt(), hour,minute,second));
+      }
+      
+      defaultState = false;
+      memset(bracket, 0, 20);
+      memset(TIMECHAR, 0, 20);
+      memset(DATECHAR, 0, 20);
+      length = 0;
+      P.displayClear();
+      loop();
+    }
+
+  }
+  P.displayText(bracket, PA_LEFT, 75, 0, PA_PRINT, PA_NO_EFFECT);
+  P.displayAnimate();
+}
+
+void setAlarm1()
+{
+  brightness();
+  if(keyboard.available())
+  {
+    char key = keyboard.read();
+    bracket[length] = key;
+
+    if (key == PS2_DELETE)
+    {
+      length--;
+      if (length <= 0)
+      {
+        length = 0;
+      }
+    }
+    else if (key == PS2_ESC)
+    {
+      defaultState = 0;
+      memset(bracket, 0, 20);
+      length = 0;
+      P.displayClear();
+      loop();
+    }
+    else 
+    {
+      if (key >= '0' && key <= '9')
+      {
+        length++;
+      }
+      
+      if (length > 8)
+      {
+        length = 8;
+      }
+    }
+    if (key == PS2_ENTER)
+    {
+      if (strlen(bracket) == 5)
+      {
+        strcat (TIMECHAR, bracket);
+
+        alarmhour_1 = String(TIMECHAR).substring(0,2);
+        alarmminute_1 = String(TIMECHAR).substring(2,4);
+      }
+      defaultState = 0;
+      memset(bracket, 0, 20);
+      memset(TIMECHAR, 0, 20);
+      length = 0;
+      P.displayClear();
+      loop();
+    }
+  }
+  P.displayText(bracket, PA_LEFT, 75, 0, PA_PRINT, PA_NO_EFFECT);
+  P.displayAnimate();
+}
+
+void setAlarm2()
+{
+  brightness();
+  if(keyboard.available())
+  {
+    char key = keyboard.read();
+    bracket[length] = key;
+
+    if (key == PS2_DELETE)
+    {
+      length--;
+      if (length <= 0)
+      {
+        length = 0;
+      }
+    }
+    else if (key == PS2_ESC)
+    {
+      defaultState = 0;
+      memset(bracket, 0, 20);
+      length = 0;
+      P.displayClear();
+      loop();
+    }
+    else 
+    {
+      if (key >= '0' && key <= '9')
+      {
+        length++;
+      }
+      
+      if (length > 8)
+      {
+        length = 8;
+      }
+    }
+    if (key == PS2_ENTER)
+    {
+      if (strlen(bracket) == 5)
+      {
+        strcat (TIMECHAR, bracket);
+
+        alarmhour_2 = String(TIMECHAR).substring(0,2);
+        alarmminute_2 = String(TIMECHAR).substring(2,4);
+      }
+      defaultState = 0;
+      memset(bracket, 0, 20);
+      memset(TIMECHAR, 0, 20);
+      length = 0;
+      P.displayClear();
+      loop();
+    }
+  }
+  P.displayText(bracket, PA_LEFT, 75, 0, PA_PRINT, PA_NO_EFFECT);
+  P.displayAnimate();
+}
+
+void setAlarm3()
+{
+  brightness();
+  if(keyboard.available())
+  {
+    char key = keyboard.read();
+    bracket[length] = key;
+
+    if (key == PS2_DELETE)
+    {
+      length--;
+      if (length <= 0)
+      {
+        length = 0;
+      }
+    }
+    else if (key == PS2_ESC)
+    {
+      defaultState = 0;
+      memset(bracket, 0, 20);
+      length = 0;
+      P.displayClear();
+      loop();
+    }
+    else 
+    {
+      if (key >= '0' && key <= '9')
+      {
+        length++;
+      }
+      
+      if (length > 8)
+      {
+        length = 8;
+      }
+    }
+    if (key == PS2_ENTER)
+    {
+      if (strlen(bracket) == 5)
+      {
+        strcat (TIMECHAR, bracket);
+
+        alarmhour_3 = String(TIMECHAR).substring(0,2);
+        alarmminute_3 = String(TIMECHAR).substring(2,4);
+      }
+      defaultState = 0;
+      memset(bracket, 0, 20);
+      memset(TIMECHAR, 0, 20);
+      length = 0;
+      P.displayClear();
+      loop();
+    }
+  }
+  P.displayText(bracket, PA_LEFT, 75, 0, PA_PRINT, PA_NO_EFFECT);
+  P.displayAnimate();
+}
+
+void checkAlarm()
+{
+  if (alarmhour_1.toInt() == hour && alarmminute_1.toInt() == minute)
+  {
+    alarmState_1 = true;
+  }
+  if (alarmhour_2.toInt() == hour && alarmminute_2.toInt() == minute)
+  {
+    alarmState_2 = true;
+  }
+  if (alarmhour_3.toInt() == hour && alarmminute_3.toInt() == minute)
+  {
+    alarmState_3 = true;
+  }
+}
+
 float temp()
 {
-    //float t1 = analogRead(LM35);
-    //float t = t1 * 0.48875855;
-    float t1 = analogRead(LM35);
-    float t = (t1 * 4.88);
-    t = (t/10);
-    return t;
+  float t1 = analogRead(LM35);
+  //float t = (t1 * 4.8875855);
+  //t = (t/10);
+  float t = t1 /2.0479;
+  return t;
 }
