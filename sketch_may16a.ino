@@ -26,25 +26,25 @@ MD_Parola P = MD_Parola(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
 bool alarmState_1 = false;
 String alarmhour_1 = "";
 String alarmminute_1 = "";
-String alarmdate_1 = "";
-String alarmmonth_1 = "";
-String alarmyear_1 = "";
+//String alarmdate_1 = "";
+//String alarmmonth_1 = "";
+//String alarmyear_1 = "";
 char *alarmmessage_1 = "5024201043";
 
 bool alarmState_2 = false;
 String alarmhour_2 = "";
 String alarmminute_2 = "";
-String alarmdate_2 = "";
-String alarmmonth_2 = "";
-String alarmyear_2 = "";
+//String alarmdate_2 = "";
+//String alarmmonth_2 = "";
+//String alarmyear_2 = "";
 char *alarmmessage_2 = "5024201043 Muhammad Risyad Ibenzani";
 
 bool alarmState_3 = false;
 String alarmhour_3 = "";
 String alarmminute_3 = "";
-String alarmdate_3 = "";
-String alarmmonth_3 = "";
-String alarmyear_3 = "";
+//String alarmdate_3 = "";
+//String alarmmonth_3 = "";
+//String alarmyear_3 = "";
 char *alarmmessage_3 = "TEST";
 
 void setup()
