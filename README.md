@@ -1,5 +1,5 @@
 # EMBEDDED_SYSTEMS-ALARM_PROJECT
-Final project for Embedded Systems class. Digital clock with 3 alarms, input using PS/2 Keyboard.
+Final project for Embedded Systems class. Digital clock with 3 alarms, input using PS/2 Keyboard. Made using Arduino Uno R3 with 8x32 Dot Matrix Display.
 
 <img width="478" alt="image" src="https://github.com/roxasmanner05/EMBEDDED_SYSTEMS-ALARM_PROJECT/assets/125866443/9246f447-b5bc-43ba-a22e-15b6dc7d0e50">
 
